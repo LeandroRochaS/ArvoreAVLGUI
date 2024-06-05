@@ -6,7 +6,7 @@ import winsound
 class BinaryTreeGUI:
     def __init__(self, master):
         self.master = master
-        self.master.title("Arvore AVL")
+        self.master.title("Árvore AVL")
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
 
@@ -21,7 +21,7 @@ class BinaryTreeGUI:
         self.tree = AVLTree()
 
         self.label = tk.Label(
-            self.master, text="Informe valor para inserir:", font=("Poppins", 12))
+            self.master, text="Informe valor:", font=("Poppins", 12))
         self.label.pack()
 
         self.entry = tk.Entry(self.master, font=("Poppins", 12))
@@ -37,15 +37,17 @@ class BinaryTreeGUI:
         self.delete_button = tk.Button(self.button_frame, text="Remover", font=(
             "Poppins", 12), command=self.delete_value)
         self.delete_button.pack(side=tk.LEFT, padx=10)
-        self.preorder_button = tk.Button(self.button_frame, text="PreOrdem", font=(
-            "Poppins", 12), command=self.preorder_traversal)
+
+        self.preorder_button = tk.Button(
+            self.button_frame, text="Pré-Ordem", font=("Poppins", 12), command=self.preorder_traversal)
         self.preorder_button.pack(side=tk.LEFT, padx=10)
-        self.inorder_button = tk.Button(self.button_frame, text="EmOrdem", font=(
+
+        self.inorder_button = tk.Button(self.button_frame, text="Em Ordem", font=(
             "Poppins", 12), command=self.inorder_traversal)
         self.inorder_button.pack(side=tk.LEFT, padx=10)
 
-        self.postorder_button = tk.Button(self.button_frame, text="PosOrdem", font=(
-            "Poppins", 12), command=self.postorder_traversal)
+        self.postorder_button = tk.Button(
+            self.button_frame, text="Pós-Ordem", font=("Poppins", 12), command=self.postorder_traversal)
         self.postorder_button.pack(side=tk.LEFT, padx=10)
 
         self.reset_button = tk.Button(self.button_frame, text="Resetar", font=(
@@ -54,6 +56,9 @@ class BinaryTreeGUI:
 
         self.canvas = tk.Canvas(self.master, bg="white")
         self.canvas.pack(fill=tk.BOTH, expand=True)
+
+        self.order_label = tk.Label(self.master, text="", font=("Poppins", 12))
+        self.order_label.pack(pady=10)
 
         self.root = None
 
@@ -75,6 +80,7 @@ class BinaryTreeGUI:
     def delete_value(self):
         try:
             value = int(self.entry.get())
+            self.order_label.config(text="")
             if not self.tree.search(self.root, value):
                 self.entry.delete(0, tk.END)
             else:
@@ -100,20 +106,28 @@ class BinaryTreeGUI:
                 self.canvas.create_line(x, y, x+step, y+50, arrow=tk.LAST)
                 self.draw_tree(node.right, x+step, y+50, step/2)
 
+    def tree_order(self, nodes):
+        self.order_label.config(text="{ " + " ".join(map(str, nodes)) + " }")
+
     def inorder_traversal(self):
-        self.canvas.delete("all")
-        self.tree.inorder_traversal(self.root)
-        self.draw_tree(self.root, self.master.winfo_width() // 2, 50, 150)
+        nodes = self.tree.inorder_traversal(self.root)
+        self.tree_order(nodes)
 
     def preorder_traversal(self):
-        self.canvas.delete("all")
-        self.tree.preorder_traversal(self.root)
-        self.draw_tree(self.root, self.master.winfo_width() // 2, 50, 150)
+        nodes = self.tree.preorder_traversal(self.root)
+        self.tree_order(nodes)
 
     def postorder_traversal(self):
-        self.canvas.delete("all")
-        self.tree.postorder_traversal(self.root)
-        self.draw_tree(self.root, self.master.winfo_width() // 2, 50, 150)
+        nodes = self.tree.postorder_traversal(self.root)
+        self.tree_order(nodes)
 
     def reset_tree(self):
         self.canvas.delete("all")
+        self.order_label.config(text="")
+        self.root = None
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = BinaryTreeGUI(root)
+    root.mainloop()

@@ -143,19 +143,25 @@ class AVLTree:
         return current
 
     def inorder_traversal(self, root):
+        result = []
         if root:
-            self.inorder_traversal(root.left)
-            print(root.key, end=" ")
-            self.inorder_traversal(root.right)
+            result += self.inorder_traversal(root.left)
+            result.append(root.key)
+            result += self.inorder_traversal(root.right)
+        return result
 
     def preorder_traversal(self, root):
+        result = []
         if root:
-            print(root.key, end=" ")
-            self.preorder_traversal(root.left)
-            self.preorder_traversal(root.right)
+            result.append(root.key)
+            result += self.preorder_traversal(root.left)
+            result += self.preorder_traversal(root.right)
+        return result
 
     def postorder_traversal(self, root):
+        result = []
         if root:
-            self.postorder_traversal(root.left)
-            self.postorder_traversal(root.right)
-            print(root.key, end=" ")
+            result += self.postorder_traversal(root.left)
+            result += self.postorder_traversal(root.right)
+            result.append(root.key)
+        return result
